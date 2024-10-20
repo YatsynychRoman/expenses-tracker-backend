@@ -2,7 +2,9 @@ import { type Route } from '@std/http/unstable-route';
 
 import buildURLPattern from '../helpers/buildURLPattern.ts';
 
-import { loginHandler, registerHandler } from '../handlers/index.ts';
+import { loginHandler, registerHandler, refreshTokens } from '../handlers/index.ts';
+
+import withAuthentication from "../middlwares/withAuthentication.ts";
 
 const userHandlers = {
   login: () => new Response('POST Login'),
@@ -23,6 +25,11 @@ const routes: Route[] = [
     method: ['POST'],
     pattern: buildURLPattern('auth', 'register'),
     handler: registerHandler,
+  },
+  {
+    method: ['POST'],
+    pattern: buildURLPattern('auth', 'tokens'),
+    handler: refreshTokens,
   },
   {
     method: ['GET'],
