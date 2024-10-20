@@ -2,6 +2,8 @@ import { type Route } from '@std/http/unstable-route';
 
 import buildURLPattern from '../helpers/buildURLPattern.ts';
 
+import { loginHandler, registerHandler } from '../handlers/index.ts';
+
 const userHandlers = {
   login: () => new Response('POST Login'),
   register: () => new Response('POST Register'),
@@ -14,13 +16,13 @@ const userHandlers = {
 const routes: Route[] = [
   {
     method: ['POST'],
-    pattern: buildURLPattern('auth','login'),
-    handler: userHandlers.login,
+    pattern: buildURLPattern('auth', 'login'),
+    handler: loginHandler,
   },
   {
     method: ['POST'],
-    pattern: buildURLPattern('auth','register'),
-    handler: userHandlers.register,
+    pattern: buildURLPattern('auth', 'register'),
+    handler: registerHandler,
   },
   {
     method: ['GET'],
