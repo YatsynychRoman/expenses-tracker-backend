@@ -2,18 +2,17 @@ import { type Route } from '@std/http/unstable-route';
 
 import buildURLPattern from '../helpers/buildURLPattern.ts';
 
-import { loginHandler, registerHandler, refreshTokens } from '../handlers/index.ts';
+import { 
+  loginHandler,
+  registerHandler,
+  refreshTokens,
+  getCategoriesHandler,
+  createCategoryHandler,
+  deleteCategoryHandler,
+  renameCategoryHandler,
+} from '../handlers/index.ts';
 
 import withAuthentication from "../middlwares/withAuthentication.ts";
-
-const userHandlers = {
-  login: () => new Response('POST Login'),
-  register: () => new Response('POST Register'),
-  getCategories: () => new Response('GET Categories'),
-  createCategory: () => new Response('POST Categories'),
-  deleteCategory: () => new Response('DELETE Categories'),
-  renameCategory: () => new Response('PATCH Categories'),
-};
 
 const routes: Route[] = [
   {
@@ -34,22 +33,22 @@ const routes: Route[] = [
   {
     method: ['GET'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: withAuthentication(userHandlers.getCategories),
+    handler: withAuthentication(getCategoriesHandler),
   },
   {
     method: ['POST'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: withAuthentication(userHandlers.createCategory),
+    handler: withAuthentication(createCategoryHandler),
   },
   {
     method: ['DELETE'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: withAuthentication(userHandlers.deleteCategory),
+    handler: withAuthentication(deleteCategoryHandler),
   },
   {
     method: ['PATCH'],
     pattern: buildURLPattern('user', 'categories/:id'),
-    handler: withAuthentication(userHandlers.renameCategory),
+    handler: withAuthentication(renameCategoryHandler),
   },
 ];
 

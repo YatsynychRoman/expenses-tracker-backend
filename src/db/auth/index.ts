@@ -30,10 +30,14 @@ export const updateUserRefreshToken = async ({ userId, refreshToken }: { userId:
 }
 
 export const getUserByIdAndRefreshToken = async ({ userId, refreshToken }: { userId: number, refreshToken: string }): Promise<User | null> => {
-  const result = await client.queryObject<User | null>('SELECT * FROM users WHERE id = $1 AND refresh_token = $2', [userId, refreshToken]);
-  if (!result.rows.length) {
-    return null;
+  try {
+    const result = await client.queryObject<User | null>('SELECT * FROM users WHERE id = $1 AND refresh_token = $2', [userId, refreshToken]);
+    if (!result.rows.length) {
+      return null;
+    }
+    return result.rows[0];
+  } catch (e) {
+    console.error(e);
+    throw new Error('Failed to get user by ID and refresh token');
   }
-
-  return result.rows[0];
 }
