@@ -42,7 +42,7 @@ const routes: Route[] = [
   },
   {
     method: ['DELETE'],
-    pattern: buildURLPattern('user', 'categories'),
+    pattern: buildURLPattern('user', 'categories/:id'),
     handler: withAuthentication(deleteCategoryHandler),
   },
   {

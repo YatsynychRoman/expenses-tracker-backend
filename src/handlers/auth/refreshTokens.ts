@@ -8,7 +8,12 @@ export default async (req: Request) => {
   if (!refreshToken) {
     return new Response('No Authorization header was provided', { status: 400 });
   }
-  const payload = await verify(refreshToken, key);
+  let payload;
+  try {
+    payload = await verify(refreshToken, key);
+  } catch {
+    return new Response('Bad token', { status: 400 });
+  }
 
   if (!payload.userId || typeof payload.userId !== 'number') {
     return new Response('Bad token', { status: 400 });

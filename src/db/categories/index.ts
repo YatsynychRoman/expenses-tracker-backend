@@ -3,11 +3,8 @@ import { Category } from '../../types/types.ts';
 
 export const getCategories = async (userId: string): Promise<Category[] | null> => {
   try {
-    const categories = await client.queryObject<Category[] | null>('SELECT * FROM categories WHERE user_id = $1 OR user_id IS NULL', [userId]);
-    if (!categories.rows.length) {
-      return null;
-    }
-    return categories.rows[0];
+    const result = await client.queryObject<Category>('SELECT * FROM categories WHERE user_id = $1 OR user_id IS NULL', [userId]);
+    return result.rows.length > 0 ? result.rows : null;
   } catch (error) {
     console.error('Error fetching categories:', error);
     throw error;
@@ -50,6 +47,16 @@ export const getCategory = async (categoryId: number, userId: string): Promise<C
     return category.rows[0];
   } catch (error) {
     console.error('Error fetching category:', error);
+    throw error;
+  }
+};
+
+export const getCategoryByName = async (userId: string, name: string): Promise<Category | null> => {
+  try {
+    const category = await client.queryObject<Category | null>('SELECT * FROM categories WHERE user_id = $1 AND name = $2', [userId, name]);
+    return category?.rows[0] || null;
+  } catch (error) {
+    console.error('Error fetching category by name:', error);
     throw error;
   }
 };
