@@ -8,7 +8,7 @@ interface AuthenticatedRequest extends Request {
   userId: number;
 }
 
-export default function withAuthentication(handler: Handler): Handler {
+const withAuthentication = (handler: Handler): Handler => {
   return async (req: Request, info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null): Promise<Response> => {
     const token = req.headers.get('Authorization');
 
@@ -25,17 +25,17 @@ export default function withAuthentication(handler: Handler): Handler {
       return createErrorResponse('Authorization token is invalid');
     }
   };
-}
+};
 
-async function verifyToken(token: string): Promise<{ userId: number }> {
+const verifyToken = async (token: string): Promise<{ userId: number }> => {
   const payload = await verify(token, key);
   if (typeof payload.userId !== 'number') {
     throw new Error('Invalid userId in token');
   }
   return payload as { userId: number };
-}
+};
 
-function createAuthenticatedRequest(req: Request, userId: number): AuthenticatedRequest {
+const createAuthenticatedRequest = (req: Request, userId: number): AuthenticatedRequest => {
   const newHeaders = new Headers(req.headers);
   newHeaders.set('userId', userId.toString());
 
@@ -43,8 +43,10 @@ function createAuthenticatedRequest(req: Request, userId: number): Authenticated
     new Request(req, { headers: newHeaders }),
     { userId }
   ) as AuthenticatedRequest;
-}
+};
 
-function createErrorResponse(message: string): Response {
+const createErrorResponse = (message: string): Response => {
   return new Response(message, { status: UNAUTHORIZED_STATUS });
-}
+};
+
+export default withAuthentication;
