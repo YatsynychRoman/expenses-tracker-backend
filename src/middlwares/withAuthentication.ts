@@ -2,35 +2,49 @@ import { verify } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 import { type Handler } from '@std/http';
 import key from '../helpers/jwtKey.ts'
 
-// Probably could have been done better :)
-export default async (handler: Handler, req: Request, info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null ): Promise<Response> => {
-  const token = req.headers.get('Authorization');
+const UNAUTHORIZED_STATUS = 401;
 
-  if (!token) {
-    return new Response('No Authorization header was provided', { status: 401 });
-  }
+interface AuthenticatedRequest extends Request {
+  userId: number;
+}
 
-  try {
-    const payload = await verify(token, key);
-    if (typeof payload.userId !== 'number') {
-      return new Response('Authorization token is invalid', { status: 401 });
+export default function withAuthentication(handler: Handler): Handler {
+  return async (req: Request, info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null): Promise<Response> => {
+    const token = req.headers.get('Authorization');
+
+    if (!token) {
+      return createErrorResponse('No Authorization header was provided');
     }
 
-    const parsedHeaders: { [key: string]: string } = {};
-    req.headers.forEach((value, key) => {
-      parsedHeaders[key] = value;
-    })
+    try {
+      const payload = await verifyToken(token);
+      const authenticatedReq = createAuthenticatedRequest(req, payload.userId);
+      return handler(authenticatedReq, info, params);
+    } catch (e) {
+      console.error(e);
+      return createErrorResponse('Authorization token is invalid');
+    }
+  };
+}
 
-    const appendedRequest = new Request(req, {
-      headers: {
-        ...parsedHeaders,
-        userId: payload.userId.toString(),
-      },
-    });
-
-    return handler(appendedRequest, info, params);
-  } catch (e) {
-    console.error(e);
-    return new Response('Authorization token is invalid', { status: 401 });
+async function verifyToken(token: string): Promise<{ userId: number }> {
+  const payload = await verify(token, key);
+  if (typeof payload.userId !== 'number') {
+    throw new Error('Invalid userId in token');
   }
+  return payload as { userId: number };
+}
+
+function createAuthenticatedRequest(req: Request, userId: number): AuthenticatedRequest {
+  const newHeaders = new Headers(req.headers);
+  newHeaders.set('userId', userId.toString());
+
+  return Object.assign(
+    new Request(req, { headers: newHeaders }),
+    { userId }
+  ) as AuthenticatedRequest;
+}
+
+function createErrorResponse(message: string): Response {
+  return new Response(message, { status: UNAUTHORIZED_STATUS });
 }

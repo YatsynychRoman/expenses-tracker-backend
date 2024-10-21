@@ -34,22 +34,22 @@ const routes: Route[] = [
   {
     method: ['GET'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: userHandlers.getCategories,
+    handler: withAuthentication(userHandlers.getCategories),
   },
   {
     method: ['POST'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: userHandlers.createCategory,
+    handler: withAuthentication(userHandlers.createCategory),
   },
   {
     method: ['DELETE'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: userHandlers.deleteCategory,
+    handler: withAuthentication(userHandlers.deleteCategory),
   },
   {
     method: ['PATCH'],
     pattern: buildURLPattern('user', 'categories/:id'),
-    handler: userHandlers.renameCategory,
+    handler: withAuthentication(userHandlers.renameCategory),
   },
 ];
 
