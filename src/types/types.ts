@@ -10,3 +10,12 @@ export interface Category {
   user_id: number;
   name: string;
 }
+
+export interface Expense {
+  id?: number;
+  amount: number;
+  description: string;
+  user_id: number;
+  category_id: number;
+}
+

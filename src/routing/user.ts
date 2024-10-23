@@ -12,7 +12,7 @@ import {
   renameCategoryHandler,
 } from '../handlers/index.ts';
 
-import withAuthentication from "../middlwares/withAuthentication.ts";
+import withAuthentication from "../middlewares/withAuthentication.ts";
 
 const routes: Route[] = [
   {

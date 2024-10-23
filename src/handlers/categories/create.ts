@@ -1,7 +1,7 @@
 import { createCategory, getCategoryByName } from '../../db/categories/index.ts';
 
 export default async (req: Request) => {
-  const userId = req.headers.get('userId'); 
+  const userId = req.headers.get('userId');
   const { name } = await req.json();
 
   if (!userId) {

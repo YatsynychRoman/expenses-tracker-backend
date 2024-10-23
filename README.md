@@ -59,8 +59,10 @@ deno run dev
 - `PATCH /categories/:id`: Rename a category
 
 ### Expenses
-- `GET /expenses`: Retrieve all expenses
+- `GET /expenses`: Retrieve all expenses (with optional query parameters for filtering)
 - `POST /expenses`: Add a new expense
-- `GET /trends`: Get spending trend analysis
+- `DELETE /expenses/:id`: Delete an expense
+- `PATCH /expenses/:id`: Edit an expense
+- `GET /trends`: Get spending trends
 
 Happy expense tracking! 🎉

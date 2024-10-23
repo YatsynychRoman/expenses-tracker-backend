@@ -43,6 +43,7 @@ await client.queryObject(`
   CREATE TABLE expenses(
     id SERIAL PRIMARY KEY,
     amount FLOAT NOT NULL,
+    description TEXT,
     user_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
