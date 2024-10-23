@@ -19,3 +19,7 @@ export interface Expense {
   category_id: number;
 }
 
+export interface Trend {
+  month: Date;
+  amount: number;
+}

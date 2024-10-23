@@ -1,5 +1,5 @@
 import client from '../index.ts';
-import { Expense } from '../../types/types.ts';
+import { Expense, Trend } from '../../types/types.ts';
 
 export const createExpense = async (expense: Expense): Promise<Expense> => {
   const { amount, description, user_id, category_id } = expense;
@@ -18,11 +18,11 @@ export const createExpense = async (expense: Expense): Promise<Expense> => {
 };
 
 export const deleteExpense = async (id: number, userId: number): Promise<void> => {
-  try {
-    const expense = await client.queryObject(`SELECT * FROM expenses WHERE id = $1 AND user_id = $2`, [id, userId]);
+  const expense = await client.queryObject(`SELECT * FROM expenses WHERE id = $1 AND user_id = $2`, [id, userId]);
     if (expense.rows.length === 0) {
-      throw new Error('Expense not found');
-    }
+    throw new Error('Expense not found');
+  }
+  try {
     await client.queryObject(`DELETE FROM expenses WHERE id = $1 AND user_id = $2`, [id, userId]);
   } catch (error) {
     console.error(error);
@@ -31,20 +31,25 @@ export const deleteExpense = async (id: number, userId: number): Promise<void> =
 };
 
 export const editExpense = async (id: number, userId: number, partialExpense: Partial<Expense>): Promise<Expense> => {
+  const expense = await client.queryObject(`SELECT * FROM expenses WHERE id = $1 AND user_id = $2`, [id, userId]);
+  if (expense.rows.length === 0) {
+    throw new Error('Expense not found');
+  }
   try {
     const updateFields = Object.entries(partialExpense)
       .filter(([key]) => key !== 'id' && key !== 'userId')
+      .filter(([_, value]) => !!value)
       .map(([key, _value], index) => `${key} = $${index + 3}`)
       .join(', ');
 
-    const values = Object.values(partialExpense).filter((_, index) => 
-      Object.keys(partialExpense)[index] !== 'id' && Object.keys(partialExpense)[index] !== 'userId'
+    const values = Object.values(partialExpense).filter((value, index) => 
+      Object.keys(partialExpense)[index] !== 'id' && Object.keys(partialExpense)[index] !== 'userId' && !!value
     );
 
     if (updateFields.length === 0) {
       throw new Error('No valid fields to update');
     }
-
+    
     const result = await client.queryObject<Expense>(`
       UPDATE expenses
       SET ${updateFields}
@@ -101,10 +106,48 @@ export const getExpensesByCategory = async (categoryId: number): Promise<Expense
   return result.rows;
 };
 
-export const getExpensesByDate = async (userId: number, { dateFrom, dateTo }: { dateFrom: string, dateTo: string }): Promise<Expense[]> => {
+export const getExpensesByDate = async (
+  userId: number,
+  { dateFrom, dateTo }: { dateFrom: string, dateTo: string }
+): Promise<Expense[]> => {
   const result = await client.queryObject<Expense>(`SELECT * FROM expenses WHERE user_id = $1 AND created_at >= $2 AND created_at <= $3`, [userId, dateFrom, dateTo]);
   if (result.rows.length === 0) {
     return [];
   }
+  return result.rows;
+};
+
+export const getTrends = async (
+  userId: number,
+  options?: { 
+    dateFrom?: string | null;
+    dateTo?: string | null;
+    categoryId?: number | null;
+    type?: string | null;
+  }
+): Promise<Trend[]> => {
+  let query = `
+  SELECT DATE_TRUNC('${options?.type || 'month'}', created_at) at time zone 'UTC' AS ${options?.type || 'month'}, SUM(amount) as amount FROM expenses e
+  WHERE e.user_id = $1
+  `;
+
+  const queryParams: (number | string)[] = [userId];
+
+  if (options?.dateFrom) {
+    query += ` AND created_at >= $${queryParams.length + 1}`;
+    queryParams.push(options.dateFrom);
+  }
+  if (options?.dateTo) {
+    query += ` AND created_at <= $${queryParams.length + 1}`;
+    queryParams.push(options.dateTo);
+  }
+  if (options?.categoryId) {
+    query += ` AND category_id = $${queryParams.length + 1}`;
+    queryParams.push(options.categoryId);
+  }
+
+  query += ` GROUP BY ${options?.type || 'month'} ORDER BY ${options?.type || 'month'}`;
+  const result = await client.queryObject<Trend>(query, queryParams);
+
   return result.rows;
 };

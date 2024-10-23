@@ -1,6 +1,6 @@
-import { getExpenses, getExpensesByDate } from '../../db/expenses/index.ts';
+import { getExpenses } from '../../db/expenses/index.ts';
 
-export default async (req: Request, info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null) => {
+export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null) => {
   const userId = req.headers.get('userId');
   if (!userId) {
     return new Response('Unauthorized', { status: 401 });
