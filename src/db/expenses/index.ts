@@ -1,5 +1,9 @@
 import client from '../index.ts';
-import { Expense, Trend } from '../../types/types.ts';
+import { 
+  Expense,
+  Trend,
+  ExpensesByCategory,
+} from '../../types/types.ts';
 
 export const createExpense = async (expense: Expense): Promise<Expense> => {
   const { amount, description, user_id, category_id } = expense;
@@ -150,4 +154,20 @@ export const getTrends = async (
   const result = await client.queryObject<Trend>(query, queryParams);
 
   return result.rows;
+};
+
+
+export const getExpensesByCategories = async (userId: string): Promise<ExpensesByCategory[]> => {
+  try {
+    const result = await client.queryObject<ExpensesByCategory>(`
+      SELECT c.id, c.name, sum(e.amount) as total FROM expenses e 
+      JOIN categories c ON c.id = e.category_id 
+      WHERE e.user_id = $1
+      group BY c.id, c.name
+      `, [userId]);
+    return result.rows.length > 0 ? result.rows : [];
+  } catch (error) {
+    console.error('Error fetching expenses categories:', error);
+    throw error;
+  }
 };

@@ -9,6 +9,7 @@ import {
   editExpenseHandler,
   getExpensesHandler,
   getTrendsHandler,
+  getExpensesByCategoriesHandler,
 } from '../handlers/index.ts';
 
 const routes: Route[] = [
@@ -31,6 +32,11 @@ const routes: Route[] = [
     method: ['GET'],
     pattern: buildURLPattern('expenses',''),
     handler: withAuthentication(getExpensesHandler),
+  },
+  {
+    method: ['GET'],
+    pattern: buildURLPattern('expenses','categories'),
+    handler: withAuthentication(getExpensesByCategoriesHandler),
   },
   {
     method: ['GET'],

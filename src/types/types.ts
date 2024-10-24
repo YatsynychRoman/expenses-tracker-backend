@@ -23,3 +23,10 @@ export interface Trend {
   month: Date;
   amount: number;
 }
+
+export interface ExpensesByCategory {
+  id: number;
+  name: string;
+  total: number;
+}
+
