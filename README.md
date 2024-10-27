@@ -51,12 +51,13 @@ deno run dev
 - `POST /auth/register`: Register a new user
 - `POST /auth/login`: Login with email and password
 - `POST /auth/tokens`: Refresh JWT tokens
+- `GET /user`: Get info about current user
 
 ### Categories
-- `GET /categories`: List all categories
-- `POST /categories`: Create a new category
-- `DELETE /categories/:id`: Delete a category
-- `PATCH /categories/:id`: Rename a category
+- `GET /user/categories`: List all categories
+- `POST /user/categories`: Create a new category
+- `DELETE /user/categories/:id`: Delete a category
+- `PATCH /user/categories/:id`: Rename a category
 
 ### Expenses
 - `GET /expenses`: Retrieve all expenses (with optional query parameters for filtering)
