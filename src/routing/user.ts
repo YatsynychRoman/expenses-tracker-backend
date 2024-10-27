@@ -10,6 +10,7 @@ import {
   createCategoryHandler,
   deleteCategoryHandler,
   renameCategoryHandler,
+  getUserHandler,
 } from '../handlers/index.ts';
 
 import withAuthentication from "../middlewares/withAuthentication.ts";
@@ -29,6 +30,11 @@ const routes: Route[] = [
     method: ['POST'],
     pattern: buildURLPattern('auth', 'tokens'),
     handler: refreshTokens,
+  },
+  {
+    method: ['GET'],
+    pattern: buildURLPattern('user'),
+    handler: getUserHandler,
   },
   {
     method: ['GET'],

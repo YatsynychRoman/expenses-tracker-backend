@@ -15,7 +15,7 @@ import {
 const routes: Route[] = [
   {
     method: ['POST'],
-    pattern: buildURLPattern('expenses', ''),
+    pattern: buildURLPattern('expenses'),
     handler: withAuthentication(createExpenseHandler),
   },
   {
@@ -30,7 +30,7 @@ const routes: Route[] = [
   },
   {
     method: ['GET'],
-    pattern: buildURLPattern('expenses',''),
+    pattern: buildURLPattern('expenses'),
     handler: withAuthentication(getExpensesHandler),
   },
   {
@@ -40,7 +40,7 @@ const routes: Route[] = [
   },
   {
     method: ['GET'],
-    pattern: buildURLPattern('trends',''),
+    pattern: buildURLPattern('trends'),
     handler: withAuthentication(getTrendsHandler),
   },
 ]

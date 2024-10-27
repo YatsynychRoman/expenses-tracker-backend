@@ -11,3 +11,4 @@ export { default as deleteExpenseHandler } from './expenses/delete.ts';
 export { default as editExpenseHandler } from './expenses/edit.ts';
 export { default as getTrendsHandler } from './expenses/trends.ts';
 export { default as getExpensesByCategoriesHandler } from './expenses/getCategories.ts';
+export { default as getUserHandler } from './auth/getUser.ts';
