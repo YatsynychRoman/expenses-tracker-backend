@@ -1,3 +1,3 @@
 import router from './src/routing/router.ts';
 
-Deno.serve(router);
+Deno.serve({ port: Deno.env.get('PORT') }, router);

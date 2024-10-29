@@ -1,9 +1,10 @@
 import { getExpenses } from '../../db/expenses/index.ts';
+import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
 
 export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null) => {
   const userId = req.headers.get('userId');
   if (!userId) {
-    return new Response('Unauthorized', { status: 401 });
+    return buildErrorResponse('Unauthorized', 401);
   }
 
   const searchParams = new URLSearchParams(params?.search.input);
@@ -12,5 +13,5 @@ export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLP
   const categoryId = searchParams.get('categoryId');
 
   const expenses = await getExpenses(Number(userId), { dateFrom, dateTo, categoryId: Number(categoryId) });
-  return new Response(JSON.stringify(expenses), { status: 200 });
-};  
+  return buildSuccessResponse(expenses);
+};

@@ -1,9 +1,10 @@
 import { getTrends } from '../../db/expenses/index.ts';
+import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
 
 export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null) => {
   const userId = req.headers.get('userId');
   if (!userId) {
-    return new Response('Unauthorized', { status: 401 });
+    return buildErrorResponse('Unauthorized', 401);
   }
 
   const searchParams = new URLSearchParams(params?.search.input);
@@ -11,7 +12,7 @@ export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLP
   const dateTo = searchParams.get('dateTo');
   const categoryId = searchParams.get('categoryId');
   const type = searchParams.get('type');
-  
+
   const trends = await getTrends(Number(userId), { dateFrom, dateTo, categoryId: Number(categoryId), type });
   const response = [];
   for (const trend of trends) {
@@ -20,5 +21,5 @@ export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLP
       amount: trend.amount,
     });
   }
-  return new Response(JSON.stringify(response), { status: 200 });
+  return buildSuccessResponse(response, 200);
 };

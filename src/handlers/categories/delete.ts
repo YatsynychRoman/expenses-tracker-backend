@@ -1,28 +1,29 @@
 import { deleteCategory, getCategory } from '../../db/categories/index.ts';
+import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
 
 export default async (req: Request, _info: unknown, params?: URLPatternResult | null) => {
   const categoryId = params?.pathname.groups.id;
   const userId = req.headers.get('userId');
 
   if (!categoryId) {
-    return new Response('Bad request', { status: 400 });
+    return buildErrorResponse('Bad request', 400);
   }
 
   if (!userId) {
-    return new Response('Unauthorized', { status: 401 });
+    return buildErrorResponse('Unauthorized', 401);
   }
 
   const category = await getCategory(Number(categoryId), userId);
 
   if (!category) {
-    return new Response('Category not found', { status: 404 });
+    return buildErrorResponse('Category not found', 404);
   }
 
   if (category.user_id !== Number(userId)) {
-    return new Response('Not permitted', { status: 403 });
+    return buildErrorResponse('Not permitted', 403);
   }
 
   await deleteCategory(Number(categoryId), userId);
 
-  return new Response('Category deleted', { status: 200 });
+  return buildSuccessResponse(undefined, 204);
 }

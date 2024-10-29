@@ -3,26 +3,28 @@ import { create, getNumericDate, verify } from "https://deno.land/x/djwt@v3.0.2/
 
 import { getUserByIdAndRefreshToken, updateUserRefreshToken } from '../../db/auth/index.ts';
 
+import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
+
 export default async (req: Request) => {
   const refreshToken = req.headers.get('Authorization');
   if (!refreshToken) {
-    return new Response('No Authorization header was provided', { status: 400 });
+    return buildErrorResponse('No Authorization header was provided', 400);
   }
   let payload;
   try {
     payload = await verify(refreshToken, key);
   } catch {
-    return new Response('Bad token', { status: 400 });
+    return buildErrorResponse('Bad token', 400);
   }
 
   if (!payload.userId || typeof payload.userId !== 'number') {
-    return new Response('Bad token', { status: 400 });
+    return buildErrorResponse('Bad token', 400);
   }
 
   const user = await getUserByIdAndRefreshToken({ userId: payload.userId, refreshToken });
 
   if (!user) {
-    return new Response('Bad token', { status: 400 });
+    return buildErrorResponse('Bad token', 400);
   }
 
   const newAccessToken = await create({ alg: "HS512", typ: "JWT", exp: getNumericDate(60 * 60) }, { userId: user.id }, key);
@@ -31,8 +33,8 @@ export default async (req: Request) => {
   try {
     await updateUserRefreshToken({ userId: user.id, refreshToken: newRefreshToken });
   } catch {
-    return new Response('Internal server error', { status: 500 });
+    return buildErrorResponse();
   }
 
-  return new Response(JSON.stringify({ accessToken: newAccessToken, refreshToken: newRefreshToken }), { status: 200, headers: { "Content-Type": "application/json" }});
+  return buildSuccessResponse({ accessToken: newAccessToken, refreshToken: newRefreshToken });
 }
