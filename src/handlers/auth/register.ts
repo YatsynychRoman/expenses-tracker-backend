@@ -31,6 +31,10 @@ export default async (req: Request): Promise<Response> => {
     await createNewUser({ username, email, password: passwordHash });
     const createdUser = await getUserByLogin(username);
 
+    if (!createdUser) {
+      return buildErrorResponse();
+    }
+
     const accessToken = await create({ alg: "HS512", typ: "JWT", exp: getNumericDate(60 * 60) }, { userId: createdUser.id }, key);
     const refreshToken = await create({ alg: "HS512", typ: "JWT", exp: getNumericDate(60 * 60 * 24 * 30) }, { userId: createdUser.id }, key);
     return buildSuccessResponse({ accessToken, refreshToken });

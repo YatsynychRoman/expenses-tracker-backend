@@ -1,4 +1,4 @@
-export const buildSuccessResponse = (body?: object, status?: number) => {
+export const buildSuccessResponse = (body?: object | null, status?: number) => {
   return new Response(
     body ? JSON.stringify(body) : null,
     {
@@ -11,7 +11,7 @@ export const buildSuccessResponse = (body?: object, status?: number) => {
   );
 }
 
-export const buildErrorResponse = (message: string, status: number) => {
+export const buildErrorResponse = (message?: string, status?: number) => {
   if (!message && !status) {
     return new Response(
       'Internal server error',
