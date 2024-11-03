@@ -35,7 +35,7 @@ export interface ExpensesByCategory {
 }
 
 export enum Currency {
-  UAH = 'uah',
-  USD = 'usd',
-  EUR = 'eur',
+  UAH = 'UAH',
+  USD = 'USD',
+  EUR = 'EUR',
 }
