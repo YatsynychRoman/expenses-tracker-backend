@@ -7,7 +7,7 @@ const routes: Route[] = [
   {
     pattern: new URLPattern({ pathname: '*/*' }),
     method: ['OPTIONS'],
-    handler: (req: Request) => {
+    handler: () => {
       // Security is for weak :)
       return new Response(null, {
         status: 204,
@@ -15,7 +15,7 @@ const routes: Route[] = [
           'Access-Control-Allow-Methods': '*',
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Max-Age': 86400,
+          'Access-Control-Max-Age': '86400',
         }
       });
     }

@@ -1,4 +1,4 @@
-import { getUserById } from "../../db/auth/index.ts";
+import { getUserById } from "../../db/user/index.ts";
 import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
 
 export default async (req: Request) => {

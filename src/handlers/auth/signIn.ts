@@ -1,7 +1,7 @@
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 import { create, getNumericDate } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 
-import { getUserByLogin, updateUserRefreshToken } from '../../db/auth/index.ts';
+import { getUserByLogin, updateUserRefreshToken } from '../../db/user/index.ts';
 
 import key from '../../helpers/jwtKey.ts';
 import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';

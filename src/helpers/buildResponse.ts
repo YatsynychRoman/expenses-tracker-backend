@@ -28,7 +28,7 @@ export const buildErrorResponse = (message?: string, status?: number) => {
   return new Response(
     JSON.stringify({ message }),
     {
-      status,
+      status: status || 400,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',

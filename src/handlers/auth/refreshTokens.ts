@@ -1,7 +1,7 @@
 import key from "../../helpers/jwtKey.ts";
 import { create, getNumericDate, verify } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 
-import { getUserByIdAndRefreshToken, updateUserRefreshToken } from '../../db/auth/index.ts';
+import { getUserByIdAndRefreshToken, updateUserRefreshToken } from '../../db/user/index.ts';
 
 import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
 

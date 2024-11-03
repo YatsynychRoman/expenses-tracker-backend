@@ -23,6 +23,9 @@ await client.queryObject(`
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    surname VARCHAR(255) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
     refresh_token VARCHAR(255)
   );
 `);

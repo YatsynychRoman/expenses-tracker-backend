@@ -11,6 +11,8 @@ import {
   deleteCategoryHandler,
   renameCategoryHandler,
   getUserHandler,
+  updateUserHandler,
+  deleteUserHandler,
   checkUsername,
   checkEmail,
 } from '../handlers/index.ts';
@@ -47,6 +49,16 @@ const routes: Route[] = [
     method: ['GET'],
     pattern: buildURLPattern('user'),
     handler: withAuthentication(getUserHandler),
+  },
+  {
+    method: ['PATCH'],
+    pattern: buildURLPattern('user'),
+    handler: withAuthentication(updateUserHandler),
+  },
+  {
+    method: ['DELETE'],
+    pattern: buildURLPattern('user'),
+    handler: withAuthentication(deleteUserHandler)
   },
   {
     method: ['GET'],

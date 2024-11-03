@@ -2,7 +2,11 @@ export type User = {
   id: number;
   username: string;
   password: string;
+  name: string;
+  surname: string;
+  currency: Currency;
   email: string;
+  refresh_token: string;
 }
 
 export interface Category {
@@ -30,3 +34,8 @@ export interface ExpensesByCategory {
   total: number;
 }
 
+export enum Currency {
+  UAH = 'uah',
+  USD = 'usd',
+  EUR = 'eur',
+}

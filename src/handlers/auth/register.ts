@@ -1,15 +1,17 @@
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 import { create, getNumericDate } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 
-import { createNewUser, getUserByLogin } from '../../db/auth/index.ts';
+import { createNewUser, getUserByLogin } from '../../db/user/index.ts';
 
 import key from '../../helpers/jwtKey.ts';
 import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
 
+import { User } from '../../types/types.ts';
+
 export default async (req: Request): Promise<Response> => {
-  const { email, username, password } = await req.json();
-  if (!email || !username || !password) {
-    return buildErrorResponse('Email, username or password is missing', 400);
+  const { email, username, password, name, surname, currency } = (await req.json()) as Omit<User, 'id'>;
+  if (!email || !username || !password || !name || !surname || !currency) {
+    return buildErrorResponse('Some fields are missing', 400);
   }
 
   const userByEmail = await getUserByLogin(email);
@@ -28,7 +30,7 @@ export default async (req: Request): Promise<Response> => {
   const passwordHash = await bcrypt.hash(password, salt);
 
   try {
-    await createNewUser({ username, email, password: passwordHash });
+    await createNewUser({ username, email, password: passwordHash, name, surname, currency });
     const createdUser = await getUserByLogin(username);
 
     if (!createdUser) {
