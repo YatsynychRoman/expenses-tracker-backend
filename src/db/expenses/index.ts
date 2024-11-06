@@ -157,7 +157,7 @@ export const getTrends = async (
 };
 
 
-export const getExpensesByCategories = async (userId: string): Promise<ExpensesByCategory[]> => {
+export const getExpensesByCategories = async (userId: number): Promise<ExpensesByCategory[]> => {
   try {
     const result = await client.queryObject<ExpensesByCategory>(`
       SELECT c.id, c.name, sum(e.amount) as total FROM expenses e 

@@ -1,11 +1,10 @@
 import { getTrends } from '../../db/expenses/index.ts';
 import { buildErrorResponse, buildSuccessResponse } from '../../helpers/buildResponse.ts';
 
-export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null) => {
-  const userId = req.headers.get('userId');
-  if (!userId) {
-    return buildErrorResponse('Unauthorized', 401);
-  }
+import type { AuthenticatedRequest } from "../../types/types.ts";
+
+export default async (req: AuthenticatedRequest, _info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null) => {
+  const userId = req.userId;
 
   const searchParams = new URLSearchParams(params?.search.input);
   const dateFrom = searchParams.get('dateFrom');
@@ -13,13 +12,18 @@ export default async (req: Request, _info?: Deno.ServeHandlerInfo, params?: URLP
   const categoryId = searchParams.get('categoryId');
   const type = searchParams.get('type');
 
-  const trends = await getTrends(Number(userId), { dateFrom, dateTo, categoryId: Number(categoryId), type });
-  const response = [];
-  for (const trend of trends) {
-    response.push({
-      month: trend.month.toLocaleDateString('en-US', { month: 'long' }),
-      amount: trend.amount,
-    });
+  try {
+    const trends = await getTrends(userId, { dateFrom, dateTo, categoryId: Number(categoryId), type });
+    const response = [];
+    for (const trend of trends) {
+      response.push({
+        month: trend.month.toLocaleDateString('en-US', { month: 'long' }),
+        amount: trend.amount,
+      });
+    }
+    return buildSuccessResponse(response, 200);
+  } catch (e) {
+    console.error(e);
+    return buildErrorResponse();
   }
-  return buildSuccessResponse(response, 200);
 };

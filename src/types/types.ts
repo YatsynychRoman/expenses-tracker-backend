@@ -1,3 +1,5 @@
+import { type Handler } from '@std/http';
+
 export type User = {
   id: number;
   username: string;
@@ -38,4 +40,12 @@ export enum Currency {
   UAH = 'UAH',
   USD = 'USD',
   EUR = 'EUR',
+}
+
+export interface AuthenticatedRequest extends Request {
+  userId: number;
+}
+
+export interface AuthenticatedHandler extends Handler {
+  (request: AuthenticatedRequest, info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null): Response | Promise<Response>
 }

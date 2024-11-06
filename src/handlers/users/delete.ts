@@ -1,11 +1,10 @@
 import { deleteUser } from "../../db/user/index.ts";
 import { buildErrorResponse, buildSuccessResponse } from "../../helpers/buildResponse.ts";
 
-export default async (req: Request) => {
-  const userId = req.headers.get('userId');
-  if (!userId) {
-    return buildErrorResponse('Unathorized', 401);
-  }
+import type { AuthenticatedRequest } from "../../types/types.ts";
+
+export default async (req: AuthenticatedRequest) => {
+  const userId = req.userId;
 
   try {
     await deleteUser(userId);

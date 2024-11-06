@@ -1,4 +1,4 @@
-import { type Route } from '@std/http/unstable-route';
+import { type Route, type Handler } from '@std/http/unstable-route';
 
 import buildURLPattern from '../helpers/buildURLPattern.ts';
 
@@ -48,37 +48,37 @@ const routes: Route[] = [
   {
     method: ['GET'],
     pattern: buildURLPattern('user'),
-    handler: withAuthentication(getUserHandler),
+    handler: withAuthentication(getUserHandler as Handler),
   },
   {
     method: ['PATCH'],
     pattern: buildURLPattern('user'),
-    handler: withAuthentication(updateUserHandler),
+    handler: withAuthentication(updateUserHandler as Handler),
   },
   {
     method: ['DELETE'],
     pattern: buildURLPattern('user'),
-    handler: withAuthentication(deleteUserHandler)
+    handler: withAuthentication(deleteUserHandler as Handler)
   },
   {
     method: ['GET'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: withAuthentication(getCategoriesHandler),
+    handler: withAuthentication(getCategoriesHandler as Handler),
   },
   {
     method: ['POST'],
     pattern: buildURLPattern('user', 'categories'),
-    handler: withAuthentication(createCategoryHandler),
+    handler: withAuthentication(createCategoryHandler as Handler),
   },
   {
     method: ['DELETE'],
     pattern: buildURLPattern('user', 'categories/:id'),
-    handler: withAuthentication(deleteCategoryHandler),
+    handler: withAuthentication(deleteCategoryHandler as Handler),
   },
   {
     method: ['PATCH'],
     pattern: buildURLPattern('user', 'categories/:id'),
-    handler: withAuthentication(renameCategoryHandler),
+    handler: withAuthentication(renameCategoryHandler as Handler),
   },
 ];
 

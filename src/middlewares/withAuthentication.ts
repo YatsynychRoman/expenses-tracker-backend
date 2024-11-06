@@ -2,13 +2,11 @@ import { verify } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
 import { type Handler } from '@std/http';
 import key from '../helpers/jwtKey.ts'
 
+import { AuthenticatedRequest, AuthenticatedHandler } from '../types/types.ts';
+
 const UNAUTHORIZED_STATUS = 401;
 
-interface AuthenticatedRequest extends Request {
-  userId: number;
-}
-
-const withAuthentication = (handler: Handler): Handler => {
+const withAuthentication = (handler: Handler): AuthenticatedHandler => {
   return async (req: Request, info?: Deno.ServeHandlerInfo, params?: URLPatternResult | null): Promise<Response> => {
     const token = req.headers.get('Authorization');
 

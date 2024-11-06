@@ -51,7 +51,7 @@ export const getUserByIdAndRefreshToken = async ({ userId, refreshToken }: { use
   }
 }
 
-export const getUserById = async (userId: string): Promise<User | null> => {
+export const getUserById = async (userId: number): Promise<User | null> => {
   try { 
     const result = await client.queryObject<User>('SELECT id, username, email, name, surname, currency FROM users WHERE id = $1', [userId]);
     if (!result.rows.length) {
@@ -64,7 +64,7 @@ export const getUserById = async (userId: string): Promise<User | null> => {
   }
 }
 
-export const updateUser = async (userId: string, { ...options }: Partial<User>): Promise<Omit<User, 'password' | 'refresh_token'>> => {
+export const updateUser = async (userId: number, { ...options }: Partial<User>): Promise<Omit<User, 'password' | 'refresh_token'>> => {
   const user = await client.queryObject<User>('SELECT * FROM users WHERE id = $1', [userId]);
   if (user.rows.length === 0) {
     throw new Error('User not found');
@@ -109,7 +109,7 @@ export const updateUser = async (userId: string, { ...options }: Partial<User>):
   }
 }
 
-export const deleteUser = async (userId: string): Promise<void> => {
+export const deleteUser = async (userId: number): Promise<void> => {
   try {
     await client.queryObject('DELETE FROM users WHERE id = $1', [userId]);
   } catch (error) {
